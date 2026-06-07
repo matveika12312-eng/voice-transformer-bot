@@ -34,8 +34,15 @@ async def handle_voice(message: Message):
             audio_data = recognizer.record(source)
             text = recognizer.recognize_google(audio_data, language="ru-RU")
             
-        # 4. Отправляем текст обратно
-        await msg.edit_text(f"🗣 <b>Текст голосового:</b>\n\n{text}", parse_mode="HTML")
+        # --- НАВОДИМ КРАСОТУ (Заглавная буква и точка) ---
+        if text:
+            text = text[0].upper() + text[1:]
+            if not text.endswith(('.', '!', '?')):
+                text += '.'
+        # -------------------------------------------------
+            
+        # 4. Отправляем текст обратно в виде цитаты
+        await msg.edit_text(f"<blockquote>{text}</blockquote>", parse_mode="HTML")
         
     except sr.UnknownValueError:
         await msg.edit_text("🤷‍♂️ <i>Не смог разобрать слова. Попробуй сказать четче.</i>", parse_mode="HTML")
